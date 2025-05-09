@@ -2,6 +2,7 @@ use cucumber::World;
 use mortgage_calculator_test_suite::{
     Cost, Date, Input, Month, MortgageCalculatorWorld, Results, Unit,
 };
+use thirtyfour::error::WebDriverResult;
 
 #[tokio::main]
 async fn main() {
@@ -26,17 +27,20 @@ fn default_input_data(world: &mut MortgageCalculatorWorld) {
 }
 
 #[cucumber::then("results are correct")]
-fn results_are_correct(world: &mut MortgageCalculatorWorld) {
-    world.results.read();
-    assert_eq!(
-        world.results,
-        Results {
-            house_price: "$400,000.00".into(),
-            loan_amount: "$320,000.00".into(),
-            down_payment: "$80,000.00".into(),
-            total_payments: "$739,696.04".into(),
-            total_interest: "$419,696.04".into(),
-            payoff_date: "May. 2055".into(),
-        }
-    );
+async fn results_are_correct(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
+    if let Some(driver) = &world.driver {
+        assert_eq!(
+            Results::read(&driver).await?,
+            Results {
+                house_price: "$400,000.00".into(),
+                loan_amount: "$320,000.00".into(),
+                down_payment: "$80,000.00".into(),
+                total_payments: "$739,696.04".into(),
+                total_interest: "$419,696.04".into(),
+                payoff_date: "May. 2055".into(),
+            }
+        );
+    }
+
+    Ok(())
 }
