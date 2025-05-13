@@ -10,7 +10,14 @@ async fn main() {
 }
 
 #[cucumber::given("default input data")]
-fn default_input_data(world: &mut MortgageCalculatorWorld) {
+async fn default_input_data(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
+    world.driver = Some(
+        thirtyfour::WebDriver::new(
+            "http://localhost:4444",
+            thirtyfour::DesiredCapabilities::chrome(),
+        )
+        .await?,
+    );
     world.input = Input {
         home_price: "400000".into(),
         down_payment: Cost::new("20", Unit::Percent),
@@ -18,6 +25,8 @@ fn default_input_data(world: &mut MortgageCalculatorWorld) {
         interest_rate: "6.652".into(),
         start_date: Date::new(Month::May, "2025"),
     };
+
+    Ok(())
 }
 
 #[cucumber::then("results are correct")]
