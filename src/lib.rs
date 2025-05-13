@@ -80,52 +80,46 @@ impl Results {
         Ok(Results {
             house_price: driver
                 .find(By::XPath(
-                    r#"//*[@id="content"]/div[5]/table/tbody/tr/td/table/tbody/tr[2]/td[2]/b"#,
+                    r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[2]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
             loan_amount: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[3]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
             down_payment: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[4]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
             total_payments: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[5]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
             total_interest: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[6]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
             payoff_date: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[7]/td[2]"#,
                 ))
                 .await?
-                .value()
-                .await?
-                .unwrap_or_default(),
+                .inner_html()
+                .await?,
         })
     }
 }
@@ -144,6 +138,16 @@ async fn submit(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
 
         driver
             .goto("https://www.calculator.net/mortgage-calculator.html")
+            .await?;
+        driver
+            .find(By::XPath(r#"//label[contains(@for, "caddoptional")]"#))
+            .await?
+            .click()
+            .await?;
+        driver
+            .find(By::Css(r#"[value="Clear"]"#))
+            .await?
+            .click()
             .await?;
         driver
             .find(By::Name("chouseprice"))
@@ -183,7 +187,6 @@ async fn submit(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
             .await?
             .send_keys(&world.input.start_date.year)
             .await?;
-        driver.find(By::Name("caddoptional")).await?.click().await?;
         driver.find(By::Name("x")).await?.click().await?;
     }
 
