@@ -13,10 +13,7 @@ async fn main() {
 fn default_input_data(world: &mut MortgageCalculatorWorld) {
     world.input = Input {
         home_price: "400000".into(),
-        down_payment: Cost {
-            amount: "20".into(),
-            unit: Unit::Percent,
-        },
+        down_payment: Cost::new("20", Unit::Percent),
         loan_term: "30".into(),
         interest_rate: "6.652".into(),
         start_date: Date {

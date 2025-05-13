@@ -7,6 +7,15 @@ pub struct Cost {
     pub unit: Unit,
 }
 
+impl Cost {
+    pub fn new(amount: &str, unit: Unit) -> Self {
+        Self {
+            amount: amount.into(),
+            unit,
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct Date {
     pub month: Month,
