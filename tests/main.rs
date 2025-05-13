@@ -34,14 +34,13 @@ async fn results_are_correct(world: &mut MortgageCalculatorWorld) -> WebDriverRe
     if let Some(driver) = &world.driver {
         assert_eq!(
             Results::read(&driver).await?,
-            Results {
-                house_price: "$400,000.00".into(),
-                loan_amount: "$320,000.00".into(),
-                down_payment: "$80,000.00".into(),
-                total_payments: "$739,696.04".into(),
-                total_interest: "$419,696.04".into(),
-                payoff_date: "May. 2055".into(),
-            }
+            Results::default()
+                .house_price("$400,000.00")
+                .loan_amount("$320,000.00")
+                .down_payment("$80,000.00")
+                .total_payments("$739,696.04")
+                .total_interest("$419,696.04")
+                .payoff_date("May. 2055")
         );
     }
 

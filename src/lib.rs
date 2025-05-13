@@ -122,6 +122,48 @@ impl Results {
                 .await?,
         })
     }
+
+    pub fn house_price(self, house_price: &str) -> Self {
+        Self {
+            house_price: house_price.into(),
+            ..self
+        }
+    }
+
+    pub fn loan_amount(self, loan_amount: &str) -> Self {
+        Self {
+            loan_amount: loan_amount.into(),
+            ..self
+        }
+    }
+
+    pub fn down_payment(self, down_payment: &str) -> Self {
+        Self {
+            down_payment: down_payment.into(),
+            ..self
+        }
+    }
+
+    pub fn total_payments(self, total_payments: &str) -> Self {
+        Self {
+            total_payments: total_payments.into(),
+            ..self
+        }
+    }
+
+    pub fn total_interest(self, total_interest: &str) -> Self {
+        Self {
+            total_interest: total_interest.into(),
+            ..self
+        }
+    }
+
+    pub fn payoff_date(self, payoff_date: &str) -> Self {
+        Self {
+            payoff_date: payoff_date.into(),
+            ..self
+        }
+    }
 }
 
 #[derive(Debug, Default)]
