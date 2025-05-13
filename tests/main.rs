@@ -1,5 +1,7 @@
 use cucumber::World;
-use mortgage_calculator_test_suite::{Input, Month, MortgageCalculatorWorld, Results, Unit};
+use mortgage_calculator_test_suite::{
+    Input, Month, MortgageCalculatorError, MortgageCalculatorWorld, Results, Unit,
+};
 use thirtyfour::error::WebDriverResult;
 
 #[tokio::main]
@@ -21,8 +23,8 @@ async fn default_input_data(world: &mut MortgageCalculatorWorld) -> WebDriverRes
 
 #[cucumber::then("results are correct")]
 async fn results_are_correct(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
-    if let Some(driver) = &world.driver {
-        assert_eq!(
+    match &world.driver {
+        Some(driver) => Ok(assert_eq!(
             Results::read(&driver).await?,
             Results::default()
                 .house_price("$400,000.00")
@@ -31,8 +33,7 @@ async fn results_are_correct(world: &mut MortgageCalculatorWorld) -> WebDriverRe
                 .total_payments("$739,696.04")
                 .total_interest("$419,696.04")
                 .payoff_date("May. 2055")
-        );
+        )),
+        None => Err(MortgageCalculatorError::uninitialized_driver()),
     }
-
-    Ok(())
 }

@@ -1,5 +1,8 @@
 use cucumber::World;
-use thirtyfour::prelude::{By, WebDriver, WebDriverResult};
+use thirtyfour::{
+    error::{WebDriverError, WebDriverErrorInfo},
+    prelude::{By, WebDriver, WebDriverResult},
+};
 
 #[derive(Debug, Default)]
 pub struct Cost {
@@ -93,6 +96,16 @@ pub enum Month {
     Oct,
     Nov,
     Dec,
+}
+
+pub struct MortgageCalculatorError;
+
+impl MortgageCalculatorError {
+    pub fn uninitialized_driver() -> WebDriverError {
+        WebDriverError::SessionNotCreated(WebDriverErrorInfo::new(
+            "`Given driver is initialized` step is required".into(),
+        ))
+    }
 }
 
 #[derive(Debug, Default, World)]
@@ -225,62 +238,65 @@ async fn start(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
 
 #[cucumber::when("input is submitted")]
 async fn submit(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
-    if let Some(driver) = &world.driver {
-        let start_month = &raw const world.input.start_date.month;
+    match &world.driver {
+        Some(driver) => {
+            let start_month = &raw const world.input.start_date.month;
 
-        driver
-            .goto("https://www.calculator.net/mortgage-calculator.html")
-            .await?;
-        driver
-            .find(By::XPath(r#"//label[contains(@for, "caddoptional")]"#))
-            .await?
-            .click()
-            .await?;
-        driver
-            .find(By::Css(r#"[value="Clear"]"#))
-            .await?
-            .click()
-            .await?;
-        driver
-            .find(By::Name("chouseprice"))
-            .await?
-            .send_keys(&world.input.home_price)
-            .await?;
-        driver
-            .find(By::Name("cdownpayment"))
-            .await?
-            .send_keys(&world.input.down_payment.amount)
-            .await?;
-        driver
-            .find(By::Name("cdownpaymentunit"))
-            .await?
-            .send_keys(match world.input.down_payment.unit {
-                Unit::Dollars => "d",
-                Unit::Percent => "p",
-            })
-            .await?;
-        driver
-            .find(By::Name("cloanterm"))
-            .await?
-            .send_keys(&world.input.loan_term)
-            .await?;
-        driver
-            .find(By::Name("cinterestrate"))
-            .await?
-            .send_keys(&world.input.interest_rate)
-            .await?;
-        driver
-            .find(By::Name("cstartmonth"))
-            .await?
-            .send_keys(format!("{}", start_month as u8))
-            .await?;
-        driver
-            .find(By::Name("cstartyear"))
-            .await?
-            .send_keys(&world.input.start_date.year)
-            .await?;
-        driver.find(By::Name("x")).await?.click().await?;
+            driver
+                .goto("https://www.calculator.net/mortgage-calculator.html")
+                .await?;
+            driver
+                .find(By::XPath(r#"//label[contains(@for, "caddoptional")]"#))
+                .await?
+                .click()
+                .await?;
+            driver
+                .find(By::Css(r#"[value="Clear"]"#))
+                .await?
+                .click()
+                .await?;
+            driver
+                .find(By::Name("chouseprice"))
+                .await?
+                .send_keys(&world.input.home_price)
+                .await?;
+            driver
+                .find(By::Name("cdownpayment"))
+                .await?
+                .send_keys(&world.input.down_payment.amount)
+                .await?;
+            driver
+                .find(By::Name("cdownpaymentunit"))
+                .await?
+                .send_keys(match world.input.down_payment.unit {
+                    Unit::Dollars => "d",
+                    Unit::Percent => "p",
+                })
+                .await?;
+            driver
+                .find(By::Name("cloanterm"))
+                .await?
+                .send_keys(&world.input.loan_term)
+                .await?;
+            driver
+                .find(By::Name("cinterestrate"))
+                .await?
+                .send_keys(&world.input.interest_rate)
+                .await?;
+            driver
+                .find(By::Name("cstartmonth"))
+                .await?
+                .send_keys(format!("{}", start_month as u8))
+                .await?;
+            driver
+                .find(By::Name("cstartyear"))
+                .await?
+                .send_keys(&world.input.start_date.year)
+                .await?;
+            driver.find(By::Name("x")).await?.click().await?;
+
+            Ok(())
+        }
+        None => Err(MortgageCalculatorError::uninitialized_driver()),
     }
-
-    Ok(())
 }
