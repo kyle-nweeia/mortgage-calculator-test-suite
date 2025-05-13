@@ -1,7 +1,5 @@
 use cucumber::World;
-use mortgage_calculator_test_suite::{
-    Cost, Date, Input, Month, MortgageCalculatorWorld, Results, Unit,
-};
+use mortgage_calculator_test_suite::{Input, Month, MortgageCalculatorWorld, Results, Unit};
 use thirtyfour::error::WebDriverResult;
 
 #[tokio::main]
@@ -18,13 +16,12 @@ async fn default_input_data(world: &mut MortgageCalculatorWorld) -> WebDriverRes
         )
         .await?,
     );
-    world.input = Input {
-        home_price: "400000".into(),
-        down_payment: Cost::new("20", Unit::Percent),
-        loan_term: "30".into(),
-        interest_rate: "6.652".into(),
-        start_date: Date::new(Month::May, "2025"),
-    };
+    world.input = Input::default()
+        .home_price("400000")
+        .down_payment("20", Unit::Percent)
+        .loan_term("30")
+        .interest_rate("6.652")
+        .start_date(Month::May, "2025");
 
     Ok(())
 }

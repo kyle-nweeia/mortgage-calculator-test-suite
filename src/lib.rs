@@ -40,6 +40,43 @@ pub struct Input {
     pub start_date: Date,
 }
 
+impl Input {
+    pub fn home_price(self, home_price: &str) -> Self {
+        Self {
+            home_price: home_price.into(),
+            ..self
+        }
+    }
+
+    pub fn down_payment(self, amount: &str, unit: Unit) -> Self {
+        Self {
+            down_payment: Cost::new(amount, unit),
+            ..self
+        }
+    }
+
+    pub fn loan_term(self, loan_term: &str) -> Self {
+        Self {
+            loan_term: loan_term.into(),
+            ..self
+        }
+    }
+
+    pub fn interest_rate(self, interest_rate: &str) -> Self {
+        Self {
+            interest_rate: interest_rate.into(),
+            ..self
+        }
+    }
+
+    pub fn start_date(self, month: Month, year: &str) -> Self {
+        Self {
+            start_date: Date::new(month, year),
+            ..self
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 #[repr(u8)]
 pub enum Month {
