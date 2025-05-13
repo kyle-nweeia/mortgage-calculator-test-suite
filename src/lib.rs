@@ -76,8 +76,8 @@ pub struct Results {
 }
 
 impl Results {
-    pub async fn read(driver: &WebDriver) -> WebDriverResult<Results> {
-        Ok(Results {
+    pub async fn read(driver: &WebDriver) -> WebDriverResult<Self> {
+        Ok(Self {
             house_price: driver
                 .find(By::XPath(
                     r#"//*[@id="content"]/div[4]/table/tbody/tr/td/table/tbody/tr[2]/td[2]"#,
