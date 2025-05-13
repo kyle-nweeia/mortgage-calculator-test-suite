@@ -9,13 +9,6 @@ async fn main() {
 
 #[cucumber::given("default input data")]
 async fn default_input_data(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
-    world.driver = Some(
-        thirtyfour::WebDriver::new(
-            "http://localhost:4444",
-            thirtyfour::DesiredCapabilities::chrome(),
-        )
-        .await?,
-    );
     world.input = Input::default()
         .home_price("400000")
         .down_payment("20", Unit::Percent)

@@ -210,6 +210,19 @@ pub enum Unit {
     Percent,
 }
 
+#[cucumber::given("driver is initialized")]
+async fn start(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
+    world.driver = Some(
+        thirtyfour::WebDriver::new(
+            "http://localhost:4444",
+            thirtyfour::DesiredCapabilities::chrome(),
+        )
+        .await?,
+    );
+
+    Ok(())
+}
+
 #[cucumber::when("input is submitted")]
 async fn submit(world: &mut MortgageCalculatorWorld) -> WebDriverResult<()> {
     if let Some(driver) = &world.driver {
