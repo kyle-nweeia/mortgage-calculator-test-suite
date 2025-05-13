@@ -16,10 +16,7 @@ fn default_input_data(world: &mut MortgageCalculatorWorld) {
         down_payment: Cost::new("20", Unit::Percent),
         loan_term: "30".into(),
         interest_rate: "6.652".into(),
-        start_date: Date {
-            month: Month::May,
-            year: "2025".into(),
-        },
+        start_date: Date::new(Month::May, "2025"),
     };
 }
 

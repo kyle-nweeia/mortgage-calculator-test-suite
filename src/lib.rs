@@ -22,6 +22,15 @@ pub struct Date {
     pub year: String,
 }
 
+impl Date {
+    pub fn new(month: Month, year: &str) -> Self {
+        Self {
+            month,
+            year: year.into(),
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct Input {
     pub home_price: String,
